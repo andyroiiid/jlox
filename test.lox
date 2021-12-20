@@ -1,14 +1,17 @@
 // this is a test program
-1 + 2 * (3 - 4) / 5
-
-fun hanoi(a, b, c, n) {
-    if (n <= 1) {
-        print a + "->" + c
-    } else {
-        hanoi(a, c, b, n - 1)
-        print a + "->" + c
-        hanoi(b, a, c, n - 1)
-    }
+{
+var a = 1 + 1;
+a = 3;
+{
+    var a = 1;
+    print "one";
+    print true;
+    print nil;
+    print 1 + 2 * (3 - 4) / 5;
+    print a * 2 + 1;
 }
-
-hanoi("A", "B", "C", 3)
+print a * 2 + 1;
+var h = "hello";
+var w = "world";
+print h + " " + w;
+}

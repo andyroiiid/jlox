@@ -1,8 +1,24 @@
 package com.andyroiiid.jlox;
 
-class AstPrinter implements Expr.Visitor<String> {
+class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
+    String print(Stmt stmt) {
+        return stmt.accept(this);
+    }
+
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitBlockStmt(Stmt.Block stmt) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        for (Stmt statement : stmt.statements) {
+            builder.append('\n');
+            builder.append(statement.accept(this));
+        }
+        builder.append("\n}");
+        return builder.toString();
     }
 
     private String parenthesize(String name, Expr... exprs) {
@@ -14,6 +30,26 @@ class AstPrinter implements Expr.Visitor<String> {
         }
         builder.append(')');
         return builder.toString();
+    }
+
+    @Override
+    public String visitExpressionStmt(Stmt.Expression stmt) {
+        return stmt.expression.accept(this);
+    }
+
+    @Override
+    public String visitPrintStmt(Stmt.Print stmt) {
+        return parenthesize("print", stmt.expression);
+    }
+
+    @Override
+    public String visitVarStmt(Stmt.Var stmt) {
+        return parenthesize("var " + stmt.name.lexeme, stmt.initializer);
+    }
+
+    @Override
+    public String visitAssignExpr(Expr.Assign expr) {
+        return parenthesize(expr.name.lexeme, expr.value);
     }
 
     @Override
@@ -35,5 +71,10 @@ class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        return expr.name.lexeme;
     }
 }
