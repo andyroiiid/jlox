@@ -126,6 +126,7 @@ class Parser {
         return new ParseError();
     }
 
+    @SuppressWarnings({"UnusedReturnValue", "SameParameterValue"})
     private Token consume(TokenType type, String message) {
         if (check(type)) return advance();
         throw error(peek(), message);
