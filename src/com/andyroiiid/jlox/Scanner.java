@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static com.andyroiiid.jlox.TokenType.*;
 
-public class Scanner {
+class Scanner {
     private static final Map<String, TokenType> keywords;
 
     static {

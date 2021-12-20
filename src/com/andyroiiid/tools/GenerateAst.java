@@ -1,0 +1,78 @@
+package com.andyroiiid.tools;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+
+public class GenerateAst {
+    public static void main(String[] args) throws IOException {
+        if (args.length != 1) {
+            System.err.println("Usage: GenerateAst <output directory>");
+            System.exit(64);
+        }
+        String outputDir = args[0];
+        defineAst(outputDir, "Expr", Arrays.asList(
+                "Binary: Expr left, Token operator, Expr right",
+                "Grouping: Expr expression",
+                "Literal: Object value",
+                "Unary: Token operator, Expr right"
+        ));
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
+        String path = outputDir + "/" + baseName + ".java";
+        PrintWriter writer = new PrintWriter(path, StandardCharsets.UTF_8);
+        writer.println("package com.andyroiiid.jlox;");
+        writer.println("import java.util.List;");
+        writer.println("abstract class " + baseName + " {");
+
+        defineVisitor(writer, baseName, types);
+
+        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
+
+        for (String type : types) {
+            String[] parts = type.split(":");
+            String className = parts[0].trim();
+            String fields = parts[1].trim();
+            defineType(writer, baseName, className, fields);
+        }
+
+        writer.println("}");
+        writer.close();
+    }
+
+    private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
+        writer.println("    interface Visitor<R> {");
+        String paramName = baseName.toLowerCase();
+        for (String type : types) {
+            String typename = type.split(":")[0].trim();
+            writer.println("        R visit" + typename + baseName + "(" + typename + " " + paramName + ");");
+        }
+        writer.println("    }");
+    }
+
+    private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
+        writer.println("    static class " + className + " extends " + baseName + " {");
+
+        String[] fields = fieldList.split(", ");
+        for (String field : fields) {
+            writer.println("        final " + field + ";");
+        }
+
+        writer.println("        " + className + "(" + fieldList + ") {");
+        for (String field : fields) {
+            String name = field.split(" ")[1];
+            writer.println("            this." + name + " = " + name + ";");
+        }
+        writer.println("        }");
+        writer.println("        @Override");
+        writer.println("        <R> R accept(Visitor<R> visitor) {");
+        writer.println("            return visitor.visit" + className + baseName + "(this);");
+        writer.println("        }");
+
+        writer.println("    }");
+    }
+}
