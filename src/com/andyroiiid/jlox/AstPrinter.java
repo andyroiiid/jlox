@@ -5,10 +5,6 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
         return stmt.accept(this);
     }
 
-    String print(Expr expr) {
-        return expr.accept(this);
-    }
-
     @Override
     public String visitBlockStmt(Stmt.Block stmt) {
         StringBuilder builder = new StringBuilder();
@@ -35,6 +31,24 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitExpressionStmt(Stmt.Expression stmt) {
         return stmt.expression.accept(this);
+    }
+
+    @Override
+    public String visitFunctionStmt(Stmt.Function stmt) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(fun ").append(stmt.name.lexeme).append(" (params");
+        for (Token param : stmt.params) {
+            builder.append(' ');
+            builder.append(param.lexeme);
+        }
+        builder.append(") (body");
+        for (Stmt statement : stmt.body) {
+            builder.append(' ');
+            builder.append(statement.accept(this));
+        }
+        builder.append(")");
+        builder.append(')');
+        return builder.toString();
     }
 
     @Override
@@ -75,7 +89,7 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitCallExpr(Expr.Call expr) {
         StringBuilder builder = new StringBuilder();
-        builder.append('(').append(expr.callee.accept(this)).append(' ');
+        builder.append('(').append(expr.callee.accept(this));
         for (Expr argument : expr.arguments) {
             builder.append(' ');
             builder.append(argument.accept(this));

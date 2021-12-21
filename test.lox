@@ -12,3 +12,16 @@ for (var i = 0; i < 10; i = i + 1) {
     }
 }
 print clock() - startTime;
+
+fun hanoi(a, b, c, n) {
+    if (n <= 1) {
+        print a + " -> " + c;
+    } else {
+        hanoi(a, c, b, n - 1);
+        print a + " -> " + c;
+        hanoi(b, a, c, n - 1);
+    }
+}
+
+print hanoi;
+hanoi("A", "B", "C", 3);

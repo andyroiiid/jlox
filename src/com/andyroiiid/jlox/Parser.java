@@ -27,12 +27,32 @@ class Parser {
 
     private Stmt declaration() {
         try {
+            if (match(FUN)) return function("function");
             if (match(VAR)) return varDeclaration();
             return statement();
         } catch (ParseError error) {
             synchronize();
             return null;
         }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private Stmt function(String kind) {
+        Token name = consume(IDENTIFIER, "Expected " + kind + " name.");
+        consume(LEFT_PAREN, "Expected '(' after " + kind + " name.");
+        List<Token> parameters = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (parameters.size() >= 255) {
+                    error(peek(), "Can't have more than 255 parameters.");
+                }
+                parameters.add(consume(IDENTIFIER, "Expected parameter name."));
+            } while (match(COMMA));
+        }
+        consume(RIGHT_PAREN, "Expected ')' after parameters.");
+        consume(LEFT_BRACE, "Expected '{' before " + kind + " body.");
+        List<Stmt> body = block();
+        return new Stmt.Function(name, parameters, body);
     }
 
     private Stmt varDeclaration() {
@@ -235,13 +255,13 @@ class Parser {
         List<Expr> arguments = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
             do {
-                if (arguments.size() > 255) {
+                if (arguments.size() >= 255) {
                     error(peek(), "Can't have more than 255 arguments.");
                 }
                 arguments.add(expression());
             } while (match(COMMA));
         }
-        Token paren = consume(RIGHT_PAREN, "Expect ')' after arguments.");
+        Token paren = consume(RIGHT_PAREN, "Expected ')' after arguments.");
         return new Expr.Call(callee, paren, arguments);
     }
 
@@ -253,7 +273,7 @@ class Parser {
         if (match(IDENTIFIER)) return new Expr.Variable(previous());
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
-            consume(RIGHT_PAREN, "Expect ')' after expression.");
+            consume(RIGHT_PAREN, "Expected ')' after expression.");
             return new Expr.Grouping(expr);
         }
         throw error(peek(), "Expected expression.");
