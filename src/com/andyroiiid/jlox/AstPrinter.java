@@ -39,13 +39,12 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitIfStmt(Stmt.If stmt) {
-        return "(if " +
-                stmt.expression.accept(this) +
-                " " +
-                stmt.thenBranch.accept(this) +
-                " " +
-                stmt.elseBranch.accept(this) +
-                ")";
+        String result = "(if " + stmt.expression.accept(this) + " " + stmt.thenBranch.accept(this);
+        if (stmt.elseBranch != null) {
+            result += " " + stmt.elseBranch.accept(this);
+        }
+        result += ")";
+        return result;
     }
 
     @Override
@@ -56,6 +55,11 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     @Override
     public String visitVarStmt(Stmt.Var stmt) {
         return parenthesize("var " + stmt.name.lexeme, stmt.initializer);
+    }
+
+    @Override
+    public String visitWhileStmt(Stmt.While stmt) {
+        return "(while " + stmt.condition.accept(this) + " " + stmt.body.accept(this) + ")";
     }
 
     @Override
