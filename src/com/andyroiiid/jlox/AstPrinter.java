@@ -53,7 +53,7 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitIfStmt(Stmt.If stmt) {
-        String result = "(if " + stmt.expression.accept(this) + " " + stmt.thenBranch.accept(this);
+        String result = "(if " + stmt.condition.accept(this) + " " + stmt.thenBranch.accept(this);
         if (stmt.elseBranch != null) {
             result += " " + stmt.elseBranch.accept(this);
         }
