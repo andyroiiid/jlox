@@ -1,7 +1,11 @@
 // this is a test program
 var a = 42;
 if (a > 1) {
-    print(a);
+    print a;
 } else {
-    print("nothing");
+    print "nothing";
+}
+{
+    print "hi" or 2;
+    print nil or "hi";
 }
