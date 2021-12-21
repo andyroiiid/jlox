@@ -16,12 +16,22 @@ print clock() - startTime;
 fun hanoi(a, b, c, n) {
     if (n <= 1) {
         print a + " -> " + c;
-    } else {
-        hanoi(a, c, b, n - 1);
-        print a + " -> " + c;
-        hanoi(b, a, c, n - 1);
+        return;
     }
+
+    hanoi(a, c, b, n - 1);
+    print a + " -> " + c;
+    hanoi(b, a, c, n - 1);
 }
 
 print hanoi;
 hanoi("A", "B", "C", 3);
+
+fun fib(n) {
+    if (n <= 1) return n;
+    return fib(n - 2) + fib(n - 1);
+}
+
+for (var i = 0; i < 10; i = i + 1) {
+    print fib(i);
+}
