@@ -1,17 +1,7 @@
 // this is a test program
-{
-var a = 1 + 1;
-a = 3;
-{
-    var a = 1;
-    print "one";
-    print true;
-    print nil;
-    print 1 + 2 * (3 - 4) / 5;
-    print a * 2 + 1;
-}
-print a * 2 + 1;
-var h = "hello";
-var w = "world";
-print h + " " + w;
+var a = 42;
+if (a > 1) {
+    print(a);
+} else {
+    print("nothing");
 }
