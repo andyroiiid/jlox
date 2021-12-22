@@ -1,0 +1,12 @@
+var a = 1;
+fun resolve() {
+    print a;
+}
+
+fun test() {
+    resolve();
+    var a = 2;
+    resolve();
+}
+
+test();
