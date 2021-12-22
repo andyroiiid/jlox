@@ -1,27 +1,20 @@
-class CountDown {
-    init(n) {
-        if (n < 0) {
-            print "too small";
-            return;
-        }
-        this.n = n;
+class Greeter {
+    init(name) {
+        this.name = name;
     }
 
-    tick() {
-        if (this.n < 0) return;
-        print this.n;
-        this.n = this.n - 1;
+    greet() {
+        print "Hello, " + this.name + "!";
     }
 }
 
-print CountDown;
-var c = CountDown(-1);
-print c;
-print c.init;
-print c.init(3);
-print c.init(3).n;
-var t = c.tick;
-t();
-t();
-t();
-t();
+class NameGreeter < Greeter {
+    init(firstName, lastName) {
+        super.init(firstName + " " + lastName);
+    }
+}
+
+print Greeter;
+print NameGreeter;
+var g = NameGreeter("Dear", "Esther");
+g.greet();
